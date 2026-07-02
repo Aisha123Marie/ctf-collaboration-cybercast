@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Team Dashboard — Inter-University CTF 2026</title>
   <style>
+    const supabase = supabase.createClient(
+    'https://bhewkwvnabyfgabdgbjr.supabase.co/rest/v1/',   // Rayyan gives you this
+    'sb_publishable_k1kmyuSenx56O0BWW4qklQ_zXHZ_8H2'    // Rayyan gives you this
+    )
+    
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
+  
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #0f0f1a;
@@ -298,6 +304,12 @@
     .notice strong {
       color: #7c6fff;
     }
+
+    const { data: members } = await supabase
+    .from('team_members')
+    .select('*')
+    .eq('team_code', 'CTF-X7K2')
+    
   </style>
 </head>
 <body>
