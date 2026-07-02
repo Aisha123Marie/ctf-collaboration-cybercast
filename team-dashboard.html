@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Dashboard — Inter-University CTF 2026</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f1a;
+      color: #e0e0f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #1e1e3a;
+    }
+
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #7c6fff;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a {
+      color: #a0a0c0;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #7c6fff; }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Page title ── */
+    .page-title {
+      margin-bottom: 1.5rem;
+    }
+
+    .page-title h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .page-title p {
+      font-size: 0.88rem;
+      color: #6060a0;
+      margin-top: 4px;
+    }
+
+    /* ── Stats row (empty) ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: #16162a;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: #6060a0;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #2a2a4a;
+    }
+
+    .stat-value.placeholder {
+      font-size: 1rem;
+      color: #3a3a5a;
+      font-weight: 400;
+    }
+
+    /* ── Two column layout ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .two-col { grid-template-columns: 1fr; }
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: #16162a;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 1.4rem;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      text-align: center;
+      gap: 12px;
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      opacity: 0.3;
+    }
+
+    .empty-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #4a4a6a;
+    }
+
+    .empty-desc {
+      font-size: 0.82rem;
+      color: #3a3a5a;
+      line-height: 1.5;
+    }
+
+    /* ── Action buttons ── */
+    .action-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 11px;
+      background: #7c6fff;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-primary:hover { background: #6a5de8; }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 11px;
+      background: transparent;
+      color: #a0a0c0;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #1e1e3a;
+      color: #ffffff;
+    }
+
+    /* ── Empty member slots ── */
+    .member-slots {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .empty-slot {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px dashed #2a2a4a;
+      border-radius: 8px;
+    }
+
+    .slot-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #1e1e3a;
+      border: 1px dashed #2a2a4a;
+      flex-shrink: 0;
+    }
+
+    .slot-text {
+      font-size: 0.82rem;
+      color: #3a3a5a;
+    }
+
+    /* ── Empty challenges ── */
+    .empty-challenges {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .empty-challenge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border: 1px dashed #2a2a4a;
+      border-radius: 8px;
+    }
+
+    .empty-bar {
+      height: 10px;
+      border-radius: 4px;
+      background: #1e1e3a;
+    }
+
+    /* ── Rank bar (empty) ── */
+    .rank-bar-wrapper { margin-top: 0.5rem; }
+
+    .rank-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #3a3a5a;
+      margin-bottom: 6px;
+    }
+
+    .rank-bar-bg {
+      background: #1e1e3a;
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .rank-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: #2a2a4a;
+      width: 0%;
+    }
+
+    /* ── Notice banner ── */
+    .notice {
+      background: #1a1a2e;
+      border: 1px solid #2a2a4a;
+      border-left: 3px solid #7c6fff;
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.85rem;
+      color: #a0a0c0;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .notice strong {
+      color: #7c6fff;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">🚩 CTF 2026</div>
+    <div class="nav-links">
+      <a href="#">Challenges</a>
+      <a href="#">Scoreboard</a>
+      <a href="#">Profile</a>
+      <a href="register.html" style="color:#e24b4b">Logout</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <div class="page-title">
+      <h1>Team Dashboard</h1>
+      <p>Inter-University CTF 2026</p>
+    </div>
+
+    <!-- Notice banner -->
+    <div class="notice">
+      <strong>You are not in a team yet.</strong> Create a new team or join an existing one using an invite code to start competing!
+    </div>
+
+    <!-- Stats row (all empty) -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Team score</div>
+        <div class="stat-value placeholder">— pts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Global rank</div>
+        <div class="stat-value placeholder">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Challenges solved</div>
+        <div class="stat-value placeholder">— / —</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Members</div>
+        <div class="stat-value placeholder">— / —</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+
+      <!-- Left: No team yet -->
+      <div class="card">
+        <h2>Your team</h2>
+
+        <div class="member-slots">
+          <div class="empty-slot">
+            <div class="slot-avatar"></div>
+            <div class="slot-text">Waiting for team leader...</div>
+          </div>
+          <div class="empty-slot">
+            <div class="slot-avatar"></div>
+            <div class="slot-text">Empty slot</div>
+          </div>
+          <div class="empty-slot">
+            <div class="slot-avatar"></div>
+            <div class="slot-text">Empty slot</div>
+          </div>
+          <div class="empty-slot">
+            <div class="slot-avatar"></div>
+            <div class="slot-text">Empty slot</div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <a href="create-team.html" class="btn-primary">+ Create a team</a>
+          <a href="join-team.html" class="btn-secondary">🔑 Join with invite code</a>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:1rem">
+
+        <!-- Rank (empty) -->
+        <div class="card">
+          <h2>Global ranking</h2>
+          <div class="empty-state" style="padding: 1rem 0">
+            <div class="empty-icon">🏆</div>
+            <div class="empty-title">No rank yet</div>
+            <div class="empty-desc">Join or create a team to appear on the scoreboard</div>
+          </div>
+          <div class="rank-bar-wrapper">
+            <div class="rank-bar-label">
+              <span>0 pts</span>
+              <span>1250 pts (1st)</span>
+            </div>
+            <div class="rank-bar-bg">
+              <div class="rank-bar-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solved challenges (empty) -->
+        <div class="card">
+          <h2>Solved challenges</h2>
+          <div class="empty-challenges">
+            <div class="empty-challenge-row">
+              <div class="empty-bar" style="width: 55%"></div>
+              <div class="empty-bar" style="width: 12%; background:#1e1e3a"></div>
+            </div>
+            <div class="empty-challenge-row">
+              <div class="empty-bar" style="width: 40%"></div>
+              <div class="empty-bar" style="width: 12%; background:#1e1e3a"></div>
+            </div>
+            <div class="empty-challenge-row">
+              <div class="empty-bar" style="width: 65%"></div>
+              <div class="empty-bar" style="width: 12%; background:#1e1e3a"></div>
+            </div>
+          </div>
+          <div class="empty-state" style="padding-top: 1rem; padding-bottom: 0">
+            <div class="empty-desc">No challenges solved yet. Join a team to start!</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
