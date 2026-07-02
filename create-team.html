@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://bhewkwvnabyfgabdgbjr.supabase.co/rest/v1/"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Team — Inter-University CTF 2026</title>
   <style>
+
+   const supabase = supabase.createClient(
+  'https://bhewkwvnabyfgabdgbjr.supabase.co/rest/v1/',   // Rayyan gives you this
+  'sb_publishable_k1kmyuSenx56O0BWW4qklQ_zXHZ_8H2'    // Rayyan gives you this
+  ) 
+    
     * {
       margin: 0;
       padding: 0;
