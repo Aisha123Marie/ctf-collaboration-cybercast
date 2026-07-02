@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Team — Inter-University CTF 2026</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f1a;
+      color: #e0e0f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #1e1e3a;
+    }
+
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #7c6fff;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a {
+      color: #a0a0c0;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #7c6fff; }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: #16162a;
+      border: 1px solid #2a2a4a;
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .card-header .icon {
+      width: 52px;
+      height: 52px;
+      background: #1a1a2e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+    }
+
+    .card-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-header p {
+      font-size: 0.85rem;
+      color: #6060a0;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: #a0a0c0;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    /* ── Big code input ── */
+    .code-input-wrapper {
+      display: flex;
+      gap: 8px;
+    }
+
+    .code-input-wrapper input {
+      flex: 1;
+      padding: 14px 16px;
+      background: #0f0f1a;
+      border: 2px solid #2a2a4a;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-family: monospace;
+      outline: none;
+      transition: border-color 0.2s;
+      text-align: center;
+    }
+
+    .code-input-wrapper input:focus {
+      border-color: #7c6fff;
+    }
+
+    .code-input-wrapper input::placeholder {
+      color: #404060;
+      letter-spacing: 2px;
+      font-size: 1rem;
+    }
+
+    .error-msg {
+      font-size: 0.78rem;
+      color: #e24b4b;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .error-msg.visible { display: block; }
+
+    /* ── Team preview card (shown after valid code) ── */
+    .team-preview {
+      display: none;
+      background: #0f0f1a;
+      border: 1px solid #2ecc71;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .team-preview.visible { display: block; }
+
+    .team-preview .preview-label {
+      font-size: 0.75rem;
+      color: #2ecc71;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .team-preview .team-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .team-preview .team-desc {
+      font-size: 0.85rem;
+      color: #a0a0c0;
+      margin-bottom: 10px;
+    }
+
+    .team-preview .members-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: #6060a0;
+    }
+
+    .member-avatars {
+      display: flex;
+      gap: -4px;
+    }
+
+    .avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #2a2a4a;
+      border: 2px solid #16162a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #a0a0c0;
+      margin-left: -6px;
+    }
+
+    .avatar:first-child { margin-left: 0; }
+
+    .slot-count {
+      font-size: 0.82rem;
+      color: #6060a0;
+    }
+
+    .slot-count span {
+      color: #2ecc71;
+      font-weight: 600;
+    }
+
+    /* ── Buttons ── */
+    .btn-find {
+      width: 100%;
+      padding: 11px;
+      background: #2a2a4a;
+      color: #a0a0c0;
+      border: 1px solid #3a3a5a;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, color 0.2s;
+      margin-bottom: 0.7rem;
+    }
+
+    .btn-find:hover {
+      background: #3a3a5a;
+      color: #ffffff;
+    }
+
+    .btn-join {
+      width: 100%;
+      padding: 12px;
+      background: #7c6fff;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, transform 0.1s;
+      display: none;
+    }
+
+    .btn-join.visible { display: block; }
+
+    .btn-join:hover { background: #6a5de8; }
+    .btn-join:active { transform: scale(0.98); }
+    .btn-join:disabled {
+      background: #3a3a5a;
+      color: #6060a0;
+      cursor: not-allowed;
+    }
+
+    /* ── Success state ── */
+    .success-box {
+      display: none;
+      background: #0d2e1a;
+      border: 1px solid #2ecc71;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .success-box.visible { display: block; }
+    .success-box p { color: #2ecc71; font-size: 0.9rem; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #2a2a4a;
+      margin: 1.5rem 0;
+    }
+
+    .footer-link {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #6060a0;
+    }
+
+    .footer-link a {
+      color: #7c6fff;
+      text-decoration: none;
+    }
+
+    .footer-link a:hover { text-decoration: underline; }
+
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #ffffff40;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">🚩 CTF 2026</div>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Challenges</a>
+      <a href="#">Scoreboard</a>
+      <a href="register.html">Register</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="card">
+
+      <div class="card-header">
+        <div class="icon">🔑</div>
+        <h1>Join a team</h1>
+        <p>Enter the invite code your team leader shared with you</p>
+      </div>
+
+      <div class="form-group">
+        <label for="inviteCode">Invite code</label>
+        <div class="code-input-wrapper">
+          <input
+            type="text"
+            id="inviteCode"
+            placeholder="CTF-XXXX"
+            maxlength="8"
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
+        <span class="error-msg" id="code-error">Team not found. Check the code and try again.</span>
+      </div>
+
+      <button class="btn-find" id="findBtn" onclick="findTeam()">
+        <span id="find-text">Find team</span>
+        <div class="spinner" id="find-spinner"></div>
+      </button>
+
+      <!-- Team preview (shown after valid code is entered) -->
+      <div class="team-preview" id="teamPreview">
+        <div class="preview-label">✅ Team found!</div>
+        <div class="team-name" id="previewName">CyberWarriors</div>
+        <div class="team-desc" id="previewDesc">We are students from UTM and UM joining forces!</div>
+        <div class="members-row">
+          <div class="member-avatars" id="memberAvatars"></div>
+          <div class="slot-count" id="slotCount"></div>
+        </div>
+      </div>
+
+      <!-- Join button (shown after team preview) -->
+      <button class="btn-join" id="joinBtn" onclick="joinTeam()">
+        <span id="join-text">Join this team</span>
+        <div class="spinner" id="join-spinner"></div>
+      </button>
+
+      <!-- Success message -->
+      <div class="success-box" id="successBox">
+        <p>🎉 You joined the team! Redirecting to your dashboard...</p>
+      </div>
+
+      <hr class="divider">
+
+      <div class="footer-link">
+        Want to create your own team? <a href="create-team.html">Create a team</a>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const inviteInput = document.getElementById('inviteCode');
+
+    // Auto format: add "CTF-" prefix as user types
+    inviteInput.addEventListener('input', () => {
+      let val = inviteInput.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+
+      if (val.length > 0 && !val.startsWith('CTF-')) {
+        if (val.startsWith('CTF')) {
+          val = 'CTF-' + val.slice(3);
+        } else {
+          val = 'CTF-' + val;
+        }
+      }
+
+      if (val.length > 8) val = val.slice(0, 8);
+      inviteInput.value = val;
+
+      // Hide previous results when typing
+      document.getElementById('teamPreview').classList.remove('visible');
+      document.getElementById('joinBtn').classList.remove('visible');
+      document.getElementById('code-error').classList.remove('visible');
+      document.getElementById('successBox').classList.remove('visible');
+    });
+
+    // ── Fake team database (replace with Supabase later) ──
+    const fakeTeams = {
+      'CTF-X7K2': {
+        name: 'CyberWarriors',
+        desc: 'Students from UTM and UM joining forces!',
+        members: ['AR', 'WN', 'ZK'],
+        maxSize: 4,
+      },
+      'CTF-A3BM': {
+        name: 'HackSquad',
+        desc: 'Mixed team from UPM and UKM',
+        members: ['FA', 'NR'],
+        maxSize: 4,
+      },
+      'CTF-Q9PL': {
+        name: 'ByteBusters',
+        desc: 'Team from USM ready to compete!',
+        members: ['HM', 'SA', 'RZ', 'KA'],
+        maxSize: 4,
+      },
+    };
+
+    function findTeam() {
+      const code = inviteInput.value.trim().toUpperCase();
+      const errorMsg = document.getElementById('code-error');
+
+      errorMsg.classList.remove('visible');
+      document.getElementById('teamPreview').classList.remove('visible');
+      document.getElementById('joinBtn').classList.remove('visible');
+
+      if (code.length < 8) {
+        errorMsg.textContent = 'Please enter a complete invite code (e.g. CTF-X7K2).';
+        errorMsg.classList.add('visible');
+        return;
+      }
+
+      // Loading state
+      const findText    = document.getElementById('find-text');
+      const findSpinner = document.getElementById('find-spinner');
+      const findBtn     = document.getElementById('findBtn');
+
+      findBtn.disabled        = true;
+      findText.style.display  = 'none';
+      findSpinner.style.display = 'block';
+
+      // Simulate Supabase lookup (1 second)
+      setTimeout(() => {
+        findText.style.display    = 'block';
+        findSpinner.style.display = 'none';
+        findBtn.disabled          = false;
+
+        const team = fakeTeams[code];
+
+        if (!team) {
+          errorMsg.textContent = 'Team not found. Check the code and try again.';
+          errorMsg.classList.add('visible');
+          return;
+        }
+
+        if (team.members.length >= team.maxSize) {
+          errorMsg.textContent = 'This team is already full.';
+          errorMsg.classList.add('visible');
+          return;
+        }
+
+        // Show team preview
+        document.getElementById('previewName').textContent = team.name;
+        document.getElementById('previewDesc').textContent = team.desc;
+
+        const avatarsEl = document.getElementById('memberAvatars');
+        avatarsEl.innerHTML = team.members
+          .map(m => `<div class="avatar">${m}</div>`)
+          .join('');
+
+        const slots = team.maxSize - team.members.length;
+        document.getElementById('slotCount').innerHTML =
+          `<span>${slots}</span> open slot${slots !== 1 ? 's' : ''} remaining`;
+
+        document.getElementById('teamPreview').classList.add('visible');
+        document.getElementById('joinBtn').classList.add('visible');
+
+      }, 1000);
+    }
+
+    function joinTeam() {
+      const joinText    = document.getElementById('join-text');
+      const joinSpinner = document.getElementById('join-spinner');
+      const joinBtn     = document.getElementById('joinBtn');
+
+      joinBtn.disabled        = true;
+      joinText.style.display  = 'none';
+      joinSpinner.style.display = 'block';
+
+      // Simulate joining (1.5 seconds)
+      setTimeout(() => {
+        joinSpinner.style.display = 'none';
+        joinText.style.display    = 'block';
+        joinBtn.textContent       = 'Joined!';
+
+        document.getElementById('successBox').classList.add('visible');
+
+        // In real code, save to Supabase here:
+        // await supabase.from('team_members').insert({ team_code: code, user_id: currentUser.id })
+        // Then redirect:
+        // window.location.href = 'team-dashboard.html';
+      }, 1500);
+    }
+
+    // Allow pressing Enter to find team
+    inviteInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') findTeam();
+    });
+  </script>
+
+</body>
+</html>
