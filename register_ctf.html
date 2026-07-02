@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — Inter-University CTF 2026</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f1a;
+      color: #e0e0f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #1e1e3a;
+    }
+
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #7c6fff;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a {
+      color: #a0a0c0;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #7c6fff;
+    }
+
+    /* ── Main layout ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .register-card {
+      background: #16162a;
+      border: 1px solid #2a2a4a;
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    /* ── Card header ── */
+    .card-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .card-header .icon {
+      width: 52px;
+      height: 52px;
+      background: #1e1e40;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+    }
+
+    .card-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-header p {
+      font-size: 0.85rem;
+      color: #6060a0;
+    }
+
+    /* ── Form ── */
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: #a0a0c0;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 14px;
+      background: #0f0f1a;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      color: #e0e0f0;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #7c6fff;
+    }
+
+    input::placeholder {
+      color: #404060;
+    }
+
+    select option {
+      background: #16162a;
+    }
+
+    /* ── Password strength ── */
+    .password-strength {
+      margin-top: 6px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .strength-bar {
+      height: 3px;
+      flex: 1;
+      background: #2a2a4a;
+      border-radius: 2px;
+      transition: background 0.3s;
+    }
+
+    .strength-bar.weak   { background: #e24b4b; }
+    .strength-bar.medium { background: #f0a500; }
+    .strength-bar.strong { background: #2ecc71; }
+
+    .strength-label {
+      font-size: 0.75rem;
+      color: #6060a0;
+      margin-top: 4px;
+    }
+
+    /* ── Error messages ── */
+    .error-msg {
+      font-size: 0.78rem;
+      color: #e24b4b;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .error-msg.visible {
+      display: block;
+    }
+
+    /* ── Submit button ── */
+    .btn-register {
+      width: 100%;
+      padding: 12px;
+      background: #7c6fff;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s, transform 0.1s;
+      font-family: inherit;
+    }
+
+    .btn-register:hover {
+      background: #6a5de8;
+    }
+
+    .btn-register:active {
+      transform: scale(0.98);
+    }
+
+    .btn-register:disabled {
+      background: #3a3a5a;
+      cursor: not-allowed;
+    }
+
+    /* ── Success message ── */
+    .success-box {
+      display: none;
+      background: #0d2e1a;
+      border: 1px solid #2ecc71;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .success-box.visible {
+      display: block;
+    }
+
+    .success-box p {
+      color: #2ecc71;
+      font-size: 0.9rem;
+    }
+
+    /* ── Footer link ── */
+    .footer-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: #6060a0;
+    }
+
+    .footer-link a {
+      color: #7c6fff;
+      text-decoration: none;
+    }
+
+    .footer-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid #2a2a4a;
+      margin: 1.5rem 0;
+    }
+
+    /* ── Loading spinner ── */
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #ffffff40;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-logo">🚩 CTF 2026</div>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Challenges</a>
+      <a href="#">Scoreboard</a>
+      <a href="login.html">Login</a>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main>
+    <div class="register-card">
+
+      <!-- Header -->
+      <div class="card-header">
+        <div class="icon">🚩</div>
+        <h1>Create your account</h1>
+        <p>Inter-University CTF 2026</p>
+      </div>
+
+      <!-- Registration form -->
+      <form id="registerForm" novalidate>
+
+        <div class="form-group">
+          <label for="fullname">Full name</label>
+          <input
+            type="text"
+            id="fullname"
+            placeholder="e.g. Aisha Binti Rahman"
+            autocomplete="name"
+          >
+          <span class="error-msg" id="fullname-error">Please enter your full name.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="e.g. aisha@university.edu.my"
+            autocomplete="email"
+          >
+          <span class="error-msg" id="email-error">Please enter a valid email address.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="university">University</label>
+          <select id="university">
+            <option value="">Select your university</option>
+            <option value="UTM">Universiti Teknologi Malaysia (UTM)</option>
+            <option value="UM">Universiti Malaya (UM)</option>
+            <option value="UPM">Universiti Putra Malaysia (UPM)</option>
+            <option value="UKM">Universiti Kebangsaan Malaysia (UKM)</option>
+            <option value="USM">Universiti Sains Malaysia (USM)</option>
+            <option value="UITM">Universiti Teknologi MARA (UiTM)</option>
+            <option value="UNIMAS">Universiti Malaysia Sarawak (UNIMAS)</option>
+            <option value="OTHER">Other</option>
+          </select>
+          <span class="error-msg" id="university-error">Please select your university.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Create a strong password"
+            autocomplete="new-password"
+          >
+          <div class="password-strength">
+            <div class="strength-bar" id="bar1"></div>
+            <div class="strength-bar" id="bar2"></div>
+            <div class="strength-bar" id="bar3"></div>
+          </div>
+          <div class="strength-label" id="strength-label"></div>
+          <span class="error-msg" id="password-error">Password must be at least 8 characters.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm password</label>
+          <input
+            type="password"
+            id="confirm-password"
+            placeholder="Repeat your password"
+            autocomplete="new-password"
+          >
+          <span class="error-msg" id="confirm-error">Passwords do not match.</span>
+        </div>
+
+        <button type="submit" class="btn-register" id="submitBtn">
+          <span id="btn-text">Create account</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+
+      </form>
+
+      <!-- Success message (shown after submit) -->
+      <div class="success-box" id="successBox">
+        <p>✅ Account created! Redirecting to team setup...</p>
+      </div>
+
+      <hr class="divider">
+
+      <div class="footer-link">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const passwordInput = document.getElementById('password');
+
+    // ── Password strength checker ──
+    passwordInput.addEventListener('input', () => {
+      const val = passwordInput.value;
+      const bars = [
+        document.getElementById('bar1'),
+        document.getElementById('bar2'),
+        document.getElementById('bar3'),
+      ];
+      const label = document.getElementById('strength-label');
+
+      bars.forEach(b => b.className = 'strength-bar');
+
+      if (val.length === 0) {
+        label.textContent = '';
+        return;
+      }
+
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+      if (/[0-9]/.test(val) && /[^A-Za-z0-9]/.test(val)) score++;
+
+      if (score === 1) {
+        bars[0].classList.add('weak');
+        label.textContent = 'Weak password';
+        label.style.color = '#e24b4b';
+      } else if (score === 2) {
+        bars[0].classList.add('medium');
+        bars[1].classList.add('medium');
+        label.textContent = 'Medium password';
+        label.style.color = '#f0a500';
+      } else if (score === 3) {
+        bars.forEach(b => b.classList.add('strong'));
+        label.textContent = 'Strong password';
+        label.style.color = '#2ecc71';
+      }
+    });
+
+    // ── Form validation and submit ──
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const fullname = document.getElementById('fullname').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const university = document.getElementById('university').value;
+      const password = document.getElementById('password').value;
+      const confirm  = document.getElementById('confirm-password').value;
+
+      let isValid = true;
+
+      // Hide all errors first
+      document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('visible'));
+
+      // Validate full name
+      if (fullname.length < 2) {
+        document.getElementById('fullname-error').classList.add('visible');
+        isValid = false;
+      }
+
+      // Validate email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        document.getElementById('email-error').classList.add('visible');
+        isValid = false;
+      }
+
+      // Validate university
+      if (!university) {
+        document.getElementById('university-error').classList.add('visible');
+        isValid = false;
+      }
+
+      // Validate password
+      if (password.length < 8) {
+        document.getElementById('password-error').classList.add('visible');
+        isValid = false;
+      }
+
+      // Validate password match
+      if (password !== confirm) {
+        document.getElementById('confirm-error').classList.add('visible');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // ── Simulate account creation (loading state) ──
+      const btn     = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btn-text');
+      const spinner = document.getElementById('spinner');
+
+      btn.disabled     = true;
+      btnText.style.display = 'none';
+      spinner.style.display = 'block';
+
+      // Simulate a 1.5s API call to Supabase
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        btnText.style.display = 'block';
+        btn.textContent = 'Account created!';
+
+        document.getElementById('successBox').classList.add('visible');
+
+        // In real code, redirect to the team page here:
+        // window.location.href = 'teams.html';
+      }, 1500);
+    });
+  </script>
+
+</body>
+</html>
