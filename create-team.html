@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Team — Inter-University CTF 2026</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f1a;
+      color: #e0e0f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #1e1e3a;
+    }
+
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #7c6fff;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a {
+      color: #a0a0c0;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #7c6fff;
+    }
+
+    /* ── Main layout ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: #16162a;
+      border: 1px solid #2a2a4a;
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* ── Card header ── */
+    .card-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .card-header .icon {
+      width: 52px;
+      height: 52px;
+      background: #1a2e1a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+    }
+
+    .card-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-header p {
+      font-size: 0.85rem;
+      color: #6060a0;
+    }
+
+    /* ── Form ── */
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: #a0a0c0;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      background: #0f0f1a;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      color: #e0e0f0;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #2ecc71;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #404060;
+    }
+
+    textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    select option {
+      background: #16162a;
+    }
+
+    /* ── Error messages ── */
+    .error-msg {
+      font-size: 0.78rem;
+      color: #e24b4b;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .error-msg.visible {
+      display: block;
+    }
+
+    /* ── Submit button ── */
+    .btn-create {
+      width: 100%;
+      padding: 12px;
+      background: #2ecc71;
+      color: #0a1a0a;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s, transform 0.1s;
+      font-family: inherit;
+    }
+
+    .btn-create:hover {
+      background: #27ae60;
+    }
+
+    .btn-create:active {
+      transform: scale(0.98);
+    }
+
+    .btn-create:disabled {
+      background: #3a3a5a;
+      color: #6060a0;
+      cursor: not-allowed;
+    }
+
+    /* ── Invite code box ── */
+    .invite-box {
+      margin-top: 1.5rem;
+      border: 1px dashed #2a2a4a;
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+      display: none;
+    }
+
+    .invite-box.visible {
+      display: block;
+    }
+
+    .invite-box .hint {
+      font-size: 0.8rem;
+      color: #6060a0;
+      margin-bottom: 0.8rem;
+    }
+
+    .invite-code-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f0f1a;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .invite-code {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 6px;
+      color: #2ecc71;
+    }
+
+    .btn-copy {
+      background: #1e1e3a;
+      color: #a0a0c0;
+      border: 1px solid #2a2a4a;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: #2a2a4a;
+      color: #ffffff;
+    }
+
+    .btn-copy.copied {
+      background: #1a2e1a;
+      color: #2ecc71;
+      border-color: #2ecc71;
+    }
+
+    .invite-box .share-hint {
+      font-size: 0.8rem;
+      color: #6060a0;
+      margin-top: 0.8rem;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid #2a2a4a;
+      margin: 1.5rem 0;
+    }
+
+    /* ── Footer link ── */
+    .footer-link {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #6060a0;
+    }
+
+    .footer-link a {
+      color: #7c6fff;
+      text-decoration: none;
+    }
+
+    .footer-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Loading spinner ── */
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #0a1a0a40;
+      border-top-color: #0a1a0a;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Character counter ── */
+    .char-count {
+      font-size: 0.75rem;
+      color: #6060a0;
+      text-align: right;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-logo">🚩 CTF 2026</div>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Challenges</a>
+      <a href="#">Scoreboard</a>
+      <a href="register.html">Register</a>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main>
+    <div class="card">
+
+      <!-- Header -->
+      <div class="card-header">
+        <div class="icon">👥</div>
+        <h1>Create a team</h1>
+        <p>You will become the team leader</p>
+      </div>
+
+      <!-- Create team form -->
+      <form id="createTeamForm" novalidate>
+
+        <div class="form-group">
+          <label for="teamName">Team name</label>
+          <input
+            type="text"
+            id="teamName"
+            placeholder="e.g. CyberWarriors"
+            maxlength="30"
+            autocomplete="off"
+          >
+          <div class="char-count"><span id="nameCount">0</span>/30</div>
+          <span class="error-msg" id="teamName-error">Please enter a team name.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="teamDesc">Team description</label>
+          <textarea
+            id="teamDesc"
+            placeholder="e.g. We are students from UTM and UM joining forces!"
+            maxlength="120"
+          ></textarea>
+          <div class="char-count"><span id="descCount">0</span>/120</div>
+        </div>
+
+        <div class="form-group">
+          <label for="teamSize">Max team size</label>
+          <select id="teamSize">
+            <option value="2">2 members</option>
+            <option value="3">3 members</option>
+            <option value="4" selected>4 members</option>
+            <option value="5">5 members</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-create" id="submitBtn">
+          <span id="btn-text">Create team</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+
+      </form>
+
+      <!-- Invite code (shown after team is created) -->
+      <div class="invite-box" id="inviteBox">
+        <p class="hint">Your team invite code</p>
+        <div class="invite-code-row">
+          <span class="invite-code" id="inviteCode">CTF-XXXX</span>
+          <button class="btn-copy" id="copyBtn" onclick="copyCode()">Copy</button>
+        </div>
+        <p class="share-hint">Share this code with your teammates so they can join!</p>
+      </div>
+
+      <hr class="divider">
+
+      <div class="footer-link">
+        Want to join an existing team? <a href="join-team.html">Join a team</a>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const teamNameInput = document.getElementById('teamName');
+    const teamDescInput = document.getElementById('teamDesc');
+
+    // ── Character counters ──
+    teamNameInput.addEventListener('input', () => {
+      document.getElementById('nameCount').textContent = teamNameInput.value.length;
+    });
+
+    teamDescInput.addEventListener('input', () => {
+      document.getElementById('descCount').textContent = teamDescInput.value.length;
+    });
+
+    // ── Generate a random invite code ──
+    function generateInviteCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = 'CTF-';
+      for (let i = 0; i < 4; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return code;
+    }
+
+    // ── Copy invite code to clipboard ──
+    function copyCode() {
+      const code = document.getElementById('inviteCode').textContent;
+      const btn = document.getElementById('copyBtn');
+
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // ── Form submit ──
+    document.getElementById('createTeamForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const teamName = teamNameInput.value.trim();
+
+      document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('visible'));
+
+      if (teamName.length < 2) {
+        document.getElementById('teamName-error').classList.add('visible');
+        return;
+      }
+
+      // Loading state
+      const btn     = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btn-text');
+      const spinner = document.getElementById('spinner');
+
+      btn.disabled          = true;
+      btnText.style.display = 'none';
+      spinner.style.display = 'block';
+
+      // Simulate saving to Supabase (1.5 seconds)
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        btnText.style.display = 'block';
+        btn.textContent       = 'Team created!';
+
+        // Generate and show invite code
+        const code = generateInviteCode();
+        document.getElementById('inviteCode').textContent = code;
+        document.getElementById('inviteBox').classList.add('visible');
+
+        // In real code, save to Supabase here:
+        // await supabase.from('teams').insert({ name: teamName, code: code })
+        // Then redirect to team dashboard:
+        // window.location.href = 'team-dashboard.html';
+      }, 1500);
+    });
+  </script>
+
+</body>
+</html>
